@@ -92,7 +92,7 @@ public class ScopeValesTest {
     }
 
     @Test
-    public void customTaskSkopeTest(){
+    public void customTaskScopeTest(){
         ScopedValue.where(MESSAGE, "error").run(() -> {
             try (var scope = new MyScope()){
                 StructuredTaskScope.Subtask<String> fork1 = scope.fork(futureTask(100));

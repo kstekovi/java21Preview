@@ -1,8 +1,11 @@
 package org.kstekovi.java.preview.multithreading;
 
 import org.junit.jupiter.api.Test;
+import org.kstekovi.java.preview.multihreading.LockingThread;
 import org.kstekovi.java.preview.multihreading.SleepingThread;
+import org.kstekovi.java.preview.multihreading.WorkingThread;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -12,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import static java.lang.Thread.currentThread;
+import static java.util.FormatProcessor.FMT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class VirtualThreadsTest {
@@ -19,7 +23,7 @@ public class VirtualThreadsTest {
     @Test
     public void platformThreadTest() throws InterruptedException {
         // prepare thread
-        Thread thread = new SleepingThread(500);
+        Thread thread = new SleepingThread(300, "Hello message");
         assertEquals(Thread.State.NEW, thread.getState());
         // start thread
         thread.start();
@@ -103,5 +107,49 @@ public class VirtualThreadsTest {
             System.out.println(futureB.get());
             System.out.println(futureC.get());
         }
+    }
+
+    @Test
+    public void virtualSleepingThreadsTest() {
+        Instant start = Instant.now();
+        try (ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor()) {
+            for (int i = 1; i <= 100; i ++){
+                Thread thread = new WorkingThread(500);
+                executorService.submit(thread);
+            }
+        }
+        Instant afterVirtualThreads = Instant.now();
+        try (ExecutorService executorService = Executors.newFixedThreadPool(50)) {
+            for (int i = 1; i <= 100; i ++){
+                Thread thread = new WorkingThread(500);
+                executorService.submit(thread);
+            }
+        }
+        Instant afterPlatformThreads = Instant.now();
+        Duration virtualThreads = Duration.between(start, afterVirtualThreads);
+        Duration platformThread = Duration.between(afterVirtualThreads, afterPlatformThreads);
+        System.out.println(FMT."Virtual threads: \{virtualThreads}, Platform threads: \{platformThread}");
+    }
+
+    @Test
+    public void LockingThreadTest() {
+        Instant start = Instant.now();
+        try (ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor()) {
+            for (int i = 1; i <= 500; i ++){
+                Thread thread = new LockingThread();
+                executorService.submit(thread);
+            }
+        }
+        Instant afterVirtualThreads = Instant.now();
+        try (ExecutorService executorService = Executors.newFixedThreadPool(50)) {
+            for (int i = 1; i <= 500; i ++){
+                Thread thread = new LockingThread();
+                executorService.submit(thread);
+            }
+        }
+        Instant afterPlatformThreads = Instant.now();
+        Duration virtualThreads = Duration.between(start, afterVirtualThreads);
+        Duration platformThread = Duration.between(afterVirtualThreads, afterPlatformThreads);
+        System.out.println(FMT."Virtual threads: \{virtualThreads}, Platform threads: \{platformThread}");
     }
 }
