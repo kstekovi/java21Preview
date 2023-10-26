@@ -7,13 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UnnamedPatternTest {
 
 
-    private final MyRecord record = new MyRecord(1, "some text");
-    private final MyCompositedRecord object = new MyCompositedRecord(record, MyEnum.FIRST);
+    private final TestRecord record = new TestRecord(1, "some text");
+    private final CompositedRecord compositedRecord = new CompositedRecord(record, MyEnum.FIRST);
 
     @Test
     public void test(){
         // Prior to Java 21 (from 16)
-        if (object instanceof MyCompositedRecord compositedRecord){
+        if (compositedRecord instanceof CompositedRecord compositedRecord){
             assertEquals(1, compositedRecord.record().id());
             assertEquals("some text", compositedRecord.record().text());
             assertEquals(MyEnum.FIRST, compositedRecord.enumValue());
@@ -21,10 +21,10 @@ public class UnnamedPatternTest {
         // As of Java 21
         // if (object instanceof MyCompositedRecord(
         //      MyUnnamedRecord(Integer id, String text), MyEnum enumValue)){
-        if (object instanceof MyCompositedRecord(MyRecord(Integer id, _), _)){
+        if (compositedRecord instanceof CompositedRecord(TestRecord(Integer id, _), _)){
             assertEquals(1 , id);
         }
-        if (object instanceof MyCompositedRecord(_, MyEnum enumValue)){
+        if (compositedRecord instanceof CompositedRecord(_, MyEnum enumValue)){
             assertEquals(MyEnum.FIRST, enumValue);
         }
         // it doesn't work with object. It works only with records

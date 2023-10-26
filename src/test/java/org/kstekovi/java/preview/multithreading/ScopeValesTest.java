@@ -17,6 +17,10 @@ public class ScopeValesTest {
 
     public final static ScopedValue<String> MESSAGE = ScopedValue.newInstance();
 
+    private static void printRequestMessage(){
+        System.out.println(STR. "\{ Instant.now() }:\{currentThread(). getName()} \{ MESSAGE.get() }");
+    }
+
     @Test
     public void noScopeTest(){
         assertThrows(NoSuchElementException.class, ScopeValesTest::printRequestMessage);
@@ -28,10 +32,6 @@ public class ScopeValesTest {
         ScopedValue.where(MESSAGE, "Message B").run(ScopeValesTest::printRequestMessage);
     }
 
-    private static void printRequestMessage(){
-        System.out.println(STR. "\{ Instant.now() }:\{currentThread(). getName()} \{ MESSAGE.get() }");
-    }
-
     @Test
     public void inheritingScopeValues() {
         ScopedValue.where(MESSAGE, "Message A").run(() -> {
@@ -39,7 +39,7 @@ public class ScopeValesTest {
             ScopedValue.where(MESSAGE, "Message B").run(() -> {
                 printRequestMessage();
                 try (StructuredTaskScope<String> scope = new StructuredTaskScope<>()) {
-                    StructuredTaskScope.Subtask<String> fork = scope.fork(futureTask(0));
+                    StructuredTaskScope.Subtask<String> fork = scope.fork(futureTask(100));
                     scope.join();  // Wait for forks
                     System.out.println(fork.get());
                 } catch (InterruptedException e) {

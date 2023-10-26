@@ -13,7 +13,7 @@ import java.util.SequencedMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class MyCollectionsTest {
+public class CollectionsTest {
 
     // SequencedCollection, SequencedSet, SequencedMap - new interfaces with new methods
     // | -> ArrayList - existing class updated
@@ -157,8 +157,9 @@ public class MyCollectionsTest {
                 .skip(expectedMap.size() - 1)
                 .findFirst()
                 .orElseThrow();
-        // remove from the map
+        // and remove the last item
         expectedMap.remove(expectedEntryV1.getKey());
+
 
         // As of Java 21
         Map.Entry<Integer, String> actualEntry = actualMap.pollLastEntry();

@@ -4,25 +4,23 @@ import java.time.Instant;
 
 public class WorkingThread extends Thread {
 
-    private final long sleepMillisecond;
+    private final long calculationTime;
 
 
     private long result = 0;
 
     public WorkingThread(long time) {
         super();
-        sleepMillisecond = time;
+        calculationTime = time;
     }
 
     @Override
     public void run() {
         super.run();
-        Instant until = Instant.now().plusMillis(sleepMillisecond);
+        Instant until = Instant.now().plusMillis(calculationTime);
 
         while (Instant.now().isBefore(until)) {
             result += 1;
         }
-//        long usedMemery = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-//        System.out.println(FMT. "\{ Instant.now() }:%-16s\{ currentThread().getName() }: Current memory usage: \{ usedMemery }" );
     }
 }

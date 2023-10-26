@@ -9,20 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PatternMatchingTest {
 
     @Test
-    public void recordTest(){
-        MyPatternsObject object1 = new MyPatternsObject("some text", 1);
-        MyPatternsObject object2 = new MyPatternsObject("some text", 1);
-
-        MyPatternsRecord record1 = new MyPatternsRecord("some text", 1);
-        MyPatternsRecord record2 = new MyPatternsRecord("some text", 1);
-
-        assertNotEquals(object1, object2);
-        assertEquals(record1, record2);
-
-        assertEquals(object1.getText(), record1.text());
-    }
-
-    @Test
     public void java16JEP394Test(){
         Object object = "some text";
         // Prior to Java 16

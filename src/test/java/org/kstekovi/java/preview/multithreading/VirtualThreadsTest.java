@@ -30,13 +30,9 @@ public class VirtualThreadsTest {
 //        Thread.startVirtualThread(thread);
         assertEquals(Thread.State.RUNNABLE, thread.getState());
         // wait it end
-        // thread.join();
+        thread.join();
         // Since java 19
         // thread.join(2000);
-        while (!thread.getState().equals(Thread.State.TERMINATED)){
-            System.out.println("Waiting for thread to finish. The state is: " + thread.getState());
-            Thread.sleep(100);
-        }
         assertEquals(Thread.State.TERMINATED, thread.getState());
     }
 
@@ -45,17 +41,13 @@ public class VirtualThreadsTest {
         try (ExecutorService executor = Executors.newSingleThreadExecutor()) {
             executor.execute(() -> {
                 try {
-                    Thread.sleep(100);
-                    System.out.println("Later log");
+                    Thread.sleep(1000);
+                    System.out.println(STR."Thread name: \{currentThread().getName()}");
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             });
         }
-        System.out.println("The first log");
-        // wait for second log
-        Thread.sleep(200);
-        System.out.println("The last log");
     }
 
     @Test
@@ -110,7 +102,7 @@ public class VirtualThreadsTest {
     }
 
     @Test
-    public void virtualSleepingThreadsTest() {
+    public void workingThreadsTest() {
         Instant start = Instant.now();
         try (ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor()) {
             for (int i = 1; i <= 100; i ++){
